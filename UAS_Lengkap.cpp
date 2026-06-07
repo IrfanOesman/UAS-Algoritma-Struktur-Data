@@ -1,46 +1,46 @@
 #include <iostream>
 using namespace std;
+
 struct Tiket_Node {
     int    ID_Tiket;
     string Nama_Pengguna;
     string Detail_Kerusakan;
-    int    ID_Teknisi_Assign; 
+    int    ID_Teknisi_Assign;
     Tiket_Node* next;
 };
+
 Tiket_Node* queueFront = NULL;
 Tiket_Node* queueBack  = NULL;
 Tiket_Node* listHead   = NULL;
+
 const int SIZE = 15;
+
 struct Teknisi_Node {
     string Nama_Teknisi;
     int    ID_Teknisi;
     Teknisi_Node* next;
 };
+
 Teknisi_Node* hashTable[SIZE];
+
 int hashFunction(int id) {
     return id % SIZE;
 }
+
 void Init_HashTable() {
     for (int i = 0; i < SIZE; i++) {
         hashTable[i] = NULL;
     }
 }
+
 void Tambah_Tiket(int ID, string Nama, string Detail) {
     cout << "\n=============== Penambahan Tiket Baru ===============" << endl;
-    Tiket_Node* cek = listHead;
-    while (cek != NULL) {
-        if (cek->ID_Tiket == ID) {
-            cout << "Gagal! ID Tiket " << ID << " sudah ada dalam sistem." << endl;
-            return;
-        }
-        cek = cek->next;
-    }
     Tiket_Node* newNode = new Tiket_Node;
-    newNode->ID_Tiket           = ID;
-    newNode->Nama_Pengguna      = Nama;
-    newNode->Detail_Kerusakan   = Detail;
-    newNode->ID_Teknisi_Assign  = 0;
-    newNode->next               = NULL;
+    newNode->ID_Tiket          = ID;
+    newNode->Nama_Pengguna     = Nama;
+    newNode->Detail_Kerusakan  = Detail;
+    newNode->ID_Teknisi_Assign = 0;
+    newNode->next              = NULL;
     if (listHead == NULL) {
         listHead = newNode;
     } else {
@@ -56,6 +56,7 @@ void Tambah_Tiket(int ID, string Nama, string Detail) {
     }
     cout << "Tiket ID-" << ID << " atas nama " << Nama << " berhasil ditambahkan!" << endl;
 }
+
 void Proses_Tiket() {
     if (queueFront == NULL) {
         cout << "\nAntrean kosong! Tidak ada tiket yang perlu diproses saat ini." << endl;
@@ -65,8 +66,8 @@ void Proses_Tiket() {
     cout << "\n========================================" << endl;
     cout << "      MEMPROSES TIKET BERIKUTNYA        " << endl;
     cout << "========================================" << endl;
-    cout << "ID Tiket         : " << tiketDiproses->ID_Tiket        << endl;
-    cout << "Nama Pengguna    : " << tiketDiproses->Nama_Pengguna   << endl;
+    cout << "ID Tiket         : " << tiketDiproses->ID_Tiket         << endl;
+    cout << "Nama Pengguna    : " << tiketDiproses->Nama_Pengguna    << endl;
     cout << "Detail Kerusakan : " << tiketDiproses->Detail_Kerusakan << endl;
     if (tiketDiproses->ID_Teknisi_Assign != 0)
         cout << "Ditangani Teknisi: ID-" << tiketDiproses->ID_Teknisi_Assign << endl;
@@ -75,6 +76,7 @@ void Proses_Tiket() {
     if (queueFront == NULL) queueBack = NULL;
     cout << "Status: Tiket berhasil keluar dari antrian dan sedang diproses!" << endl;
 }
+
 void Tambah_Teknisi(int ID, string Nama) {
     cout << "\n=============== Penambahan Teknisi Baru ===============" << endl;
     int index = hashFunction(ID);
@@ -89,10 +91,11 @@ void Tambah_Teknisi(int ID, string Nama) {
     Teknisi_Node* newNode = new Teknisi_Node;
     newNode->ID_Teknisi   = ID;
     newNode->Nama_Teknisi = Nama;
-    newNode->next         = hashTable[index]; 
+    newNode->next         = hashTable[index];
     hashTable[index]      = newNode;
-    cout << "Teknisi " << Nama << " (ID-" << ID << ") berhasil ditambahkan ke slot hash [" << index << "]." << endl;
+    cout << "Teknisi " << Nama << " (ID-" << ID << ") berhasil ditambahkan." << endl;
 }
+
 Teknisi_Node* Cari_Teknisi(int ID) {
     int index = hashFunction(ID);
     Teknisi_Node* current = hashTable[index];
@@ -102,6 +105,7 @@ Teknisi_Node* Cari_Teknisi(int ID) {
     }
     return NULL;
 }
+
 void Tampilkan_Cari_Teknisi(int ID) {
     cout << "\n========================================" << endl;
     cout << "          PENCARIAN TEKNISI             " << endl;
@@ -113,10 +117,10 @@ void Tampilkan_Cari_Teknisi(int ID) {
         cout << "Teknisi Ditemukan!" << endl;
         cout << "  ID Teknisi   : " << hasil->ID_Teknisi   << endl;
         cout << "  Nama Teknisi : " << hasil->Nama_Teknisi << endl;
-        cout << "  Slot Hash    : [" << hashFunction(ID) << "]" << endl;
     }
     cout << "========================================" << endl;
 }
+
 void Assign_Tiket(int ID_Tiket, int ID_Teknisi) {
     cout << "\n========================================" << endl;
     cout << "        ASSIGN TIKET KE TEKNISI         " << endl;
@@ -127,7 +131,7 @@ void Assign_Tiket(int ID_Tiket, int ID_Teknisi) {
         tiket = tiket->next;
     }
     if (tiket == NULL) {
-        cout << "Gagal! Tiket ID-" << ID_Tiket << " tidak ditemukan dalam sistem." << endl;
+        cout << "Gagal! Tiket ID-" << ID_Tiket << " tidak ditemukan." << endl;
         return;
     }
     Teknisi_Node* teknisi = Cari_Teknisi(ID_Teknisi);
@@ -142,6 +146,7 @@ void Assign_Tiket(int ID_Tiket, int ID_Teknisi) {
          << teknisi->Nama_Teknisi << " (ID-" << ID_Teknisi << ")." << endl;
     cout << "========================================" << endl;
 }
+
 void Tampilkan_Antrean() {
     cout << "\n========================================" << endl;
     cout << "     DAFTAR ANTRIAN TIKET YANG AKTIF    " << endl;
@@ -171,62 +176,9 @@ void Tampilkan_Antrean() {
     }
     cout << "Berhasil menampilkan semua tiket dalam antrian!" << endl;
 }
-void Tampilkan_Semua_Tiket() {
-    cout << "\n========================================" << endl;
-    cout << "     RIWAYAT SEMUA TIKET (LINKED LIST)  " << endl;
-    cout << "========================================" << endl;
-    if (listHead == NULL) {
-        cout << "Belum ada tiket dalam sistem." << endl;
-        return;
-    }
-    Tiket_Node* current = listHead;
-    int no = 1;
-    while (current != NULL) {
-        bool dalamAntrian = false;
-        Tiket_Node* q = queueFront;
-        while (q != NULL) {
-            if (q == current) { dalamAntrian = true; break; }
-            q = q->next;
-        }
-        cout << "No. " << no++ << endl;
-        cout << "  ID Tiket         : " << current->ID_Tiket         << endl;
-        cout << "  Nama Pengguna    : " << current->Nama_Pengguna    << endl;
-        cout << "  Detail Kerusakan : " << current->Detail_Kerusakan << endl;
-        cout << "  Status           : " << (dalamAntrian ? "Menunggu" : "Diproses") << endl;
-        if (current->ID_Teknisi_Assign != 0) {
-            Teknisi_Node* tek = Cari_Teknisi(current->ID_Teknisi_Assign);
-            cout << "  Assigned Teknisi : "
-                 << (tek ? tek->Nama_Teknisi : "?")
-                 << " (ID-" << current->ID_Teknisi_Assign << ")" << endl;
-        }
-        cout << "----------------------------------------" << endl;
-        current = current->next;
-    }
-}
-void Tampilkan_Semua_Teknisi() {
-    cout << "\n========================================" << endl;
-    cout << "        DAFTAR SEMUA TEKNISI            " << endl;
-    cout << "========================================" << endl;
-    bool ada = false;
-    for (int i = 0; i < SIZE; i++) {
-        Teknisi_Node* current = hashTable[i];
-        while (current != NULL) {
-            cout << "  Slot [" << i << "] | ID: " << current->ID_Teknisi
-                 << " | Nama: " << current->Nama_Teknisi << endl;
-            current = current->next;
-            ada = true;
-        }
-    }
-    if (!ada) cout << "Belum ada teknisi yang terdaftar." << endl;
-    cout << "========================================" << endl;
-}
+
 int main() {
     Init_HashTable();
-    Tambah_Tiket(1, "Andi",  "Laptop tidak bisa menyala");
-    Tambah_Tiket(2, "Budi",  "Printer paper jam");
-    Tambah_Tiket(3, "Citra", "Koneksi internet lambat");
-    Tambah_Teknisi(101, "Rizky");
-    Tambah_Teknisi(102, "Dewi");
     int pilihan;
     do {
         cout << "\n+--------------------------------------+" << endl;
@@ -238,8 +190,6 @@ int main() {
         cout << "¦  4. Cari Teknisi                     ¦" << endl;
         cout << "¦  5. Assign Tiket ke Teknisi           ¦" << endl;
         cout << "¦  6. Tampilkan Status Antrian          ¦" << endl;
-        cout << "¦  7. Tampilkan Semua Tiket             ¦" << endl;
-        cout << "¦  8. Tampilkan Semua Teknisi           ¦" << endl;
         cout << "¦  0. Keluar                           ¦" << endl;
         cout << "+--------------------------------------+" << endl;
         cout << "Pilihan: ";
@@ -247,7 +197,7 @@ int main() {
         if (pilihan == 1) {
             int    id;
             string nama, detail;
-            cout << "ID Tiket         : "; cin >> id;        cin.ignore();
+            cout << "ID Tiket         : "; cin >> id; cin.ignore();
             cout << "Nama Pengguna    : "; getline(cin, nama);
             cout << "Detail Kerusakan : "; getline(cin, detail);
             Tambah_Tiket(id, nama, detail);
@@ -256,7 +206,7 @@ int main() {
         } else if (pilihan == 3) {
             int    id;
             string nama;
-            cout << "ID Teknisi   : "; cin >> id;       cin.ignore();
+            cout << "ID Teknisi   : "; cin >> id; cin.ignore();
             cout << "Nama Teknisi : "; getline(cin, nama);
             Tambah_Teknisi(id, nama);
         } else if (pilihan == 4) {
@@ -270,10 +220,6 @@ int main() {
             Assign_Tiket(idTiket, idTeknisi);
         } else if (pilihan == 6) {
             Tampilkan_Antrean();
-        } else if (pilihan == 7) {
-            Tampilkan_Semua_Tiket();
-        } else if (pilihan == 8) {
-            Tampilkan_Semua_Teknisi();
         } else if (pilihan != 0) {
             cout << "Pilihan tidak valid. Silakan coba lagi." << endl;
         }
